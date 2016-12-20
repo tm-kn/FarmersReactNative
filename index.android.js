@@ -11,6 +11,7 @@ export default class FarmersReactNative extends Component {
       <Navigator
         initialRoute={{index: 0}}
         renderScene={(route, navigator) => {
+
           if(route.index == 0) {
             return(
               <FarmersList navigator={navigator} {...route.passProps} />
