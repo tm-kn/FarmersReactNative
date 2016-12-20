@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { AppRegistry, ListView, Text, View } from 'react-native'
+import { AppRegistry, ListView, ScrollView, StyleSheet, Text,
+          TouchableHighlight, View } from 'react-native'
 
 const API_URL = 'http://10.0.1.31:8000/'
 
@@ -21,7 +22,6 @@ export default class FarmersList extends Component {
   }
 
   render() {
-
     if(this.state.loading) {
         return(
           <View>
@@ -39,21 +39,24 @@ export default class FarmersList extends Component {
     }
 
     return(
-      <ListView
-        dataSource={this.state.farmers}
-        renderRow={this.renderRow}
-      />
+      <ScrollView>
+        <ListView
+          dataSource={this.state.farmers}
+          renderRow={this.renderRow}
+        />
+      </ScrollView>
     );
 
   }
 
   renderRow = (rowData) => {
     return(
-      <View>
-        <Text>{rowData.first_name}</Text>
-        <Text>{rowData.surname}</Text>
-        <Text>{rowData.town}</Text>
-      </View>
+      <TouchableHighlight onPress={() => this._goToDetailPage(rowData)}>
+        <View style={styles.farmerRow}>
+          <Text style={styles.farmerName}>{rowData.first_name} {rowData.surname}</Text>
+          <Text>{rowData.town}</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 
@@ -67,6 +70,27 @@ export default class FarmersList extends Component {
       this.setState({ loading: false, error: true });
     }
   }
+
+  _goToDetailPage = (rowData) => {
+    console.log("Clicked on farmer " + rowData.first_name + " " + rowData.surname);
+    this.props.navigator.push({
+      index: 1,
+      passProps: {
+        rowData: rowData
+      },
+    });
+  }
 }
+
+const styles = StyleSheet.create({
+  farmerRow: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  farmerName: {
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+});
 
 AppRegistry.registerComponent('FarmersList', () => FarmersList);
